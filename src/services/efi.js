@@ -42,7 +42,7 @@ async function obterToken() {
       },
       httpsAgent: agent
     });
-
+console.log("token");
     return data.access_token;
 
   } catch (error) {
