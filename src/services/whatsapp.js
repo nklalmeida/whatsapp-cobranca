@@ -28,7 +28,8 @@ async function enviarMensagemGrupo(texto) {
 
 async function buscarParticipantesGrupo() {
   const { data } = await api.get(`/group-members/${process.env.GRUPO_ID}`);
-  return data
+  const lista = Array.isArray(data) ? data : data.members || data.participants || [];
+  return lista
     .filter(p => !p.isAdmin)
     .map(p => ({ numero: p.phone, nome: p.name || p.phone }));
 }
