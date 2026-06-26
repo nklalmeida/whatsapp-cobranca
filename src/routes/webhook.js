@@ -6,7 +6,7 @@ const { enviarMensagem, enviarMensagemGrupo } = require('../services/whatsapp');
 // Webhook Z-API recebe mensagens
 router.post('/webhook', async (req, res) => {
   res.sendStatus(200);
-
+  console.log('📩 Webhook recebido:', JSON.stringify(req.body));
   const body = req.body;
 
   // Z-API envia isStatusReply para mensagens de status — ignora
