@@ -73,7 +73,7 @@ async function criarCobrancaPix(numero, nome, valor) {
     httpsAgent: agent
   });
 
-  console.log("TXID GERADO:", txid);
+console.log("TXID GERADO:", txid);
   console.log("COBRANÇA CRIADA:", data);
 
   return data;
@@ -96,7 +96,6 @@ async function gerarQrCode(cobranca) {
     headers: { Authorization: `Bearer ${token}` },
     httpsAgent: agent
   });
-console.log("TXID GERADO:", txid);
 
 console.log("COBRANÇA CRIADA:", data);
 
