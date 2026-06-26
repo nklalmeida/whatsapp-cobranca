@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Cobrança</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #2c2c2a; min-height: 100vh; }
+  
+  header { background: #fff; border-bottom: 1px solid #e0ddd6; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-size: 16px; font-weight: 600; color: #2c2c2a; display: flex; align-items: center; gap: 8px; }
+  .logo-dot { width: 8px; height: 8px; background: #1d9e75; border-radius: 50%; }
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d3d1c7; background: #fff; cursor: pointer; font-size: 13px; color: #444; transition: all 0.15s; }
+  .btn:hover { background: #f5f5f0; }
+  .btn-primary { background: #1d9e75; color: #fff; border-color: #1d9e75; }
+  .btn-primary:hover { background: #0f6e56; border-color: #0f6e56; }
+  .btn-danger { background: #fff; color: #a32d2d; border-color: #f09595; }
+  .btn-danger:hover { background: #fcebeb; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  
+  .mes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .mes-titulo { font-size: 22px; font-weight: 600; color: #2c2c2a; }
+  .mes-sub { font-size: 14px; color: #888780; margin-top: 2px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .card { background: #fff; border: 1px solid #e0ddd6; border-radius: 12px; padding: 1.25rem; }
+  .card-label { font-size: 12px; color: #888780; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card-value { font-size: 28px; font-weight: 600; }
+  .card-value.verde { color: #0f6e56; }
+  .card-value.amarelo { color: #854f0b; }
+  .card-value.cinza { color: #5f5e5a; }
+  .card-value.vermelho { color: #a32d2d; }
+  .card-sub { font-size: 12px; color: #888780; margin-top: 4px; }
+
+  .section { background: #fff; border: 1px solid #e0ddd6; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .section-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e0ddd6; display: flex; align-items: center; justify-content: space-between; }
+  .section-title { font-size: 14px; font-weight: 600; color: #2c2c2a; }
+
+  .filtros { display: flex; gap: 8px; }
+  .filtro { padding: 4px 12px; border-radius: 20px; border: 1px solid #e0ddd6; font-size: 12px; cursor: pointer; background: #fff; color: #5f5e5a; transition: all 0.15s; }
+  .filtro.ativo { background: #2c2c2a; color: #fff; border-color: #2c2c2a; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 12px; color: #888780; font-weight: 500; text-align: left; padding: 10px 1.5rem; border-bottom: 1px solid #e0ddd6; }
+  td { font-size: 14px; padding: 12px 1.5rem; border-bottom: 1px solid #f0ede8; color: #2c2c2a; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-verde { background: #e1f5ee; color: #0f6e56; }
+  .badge-amarelo { background: #faeeda; color: #854f0b; }
+  .badge-cinza { background: #f1efe8; color: #5f5e5a; }
+  .badge-vermelho { background: #fcebeb; color: #a32d2d; }
+
+  .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; background: #e1f5ee; color: #0f6e56; flex-shrink: 0; }
+  .nome-cel { display: flex; align-items: center; gap: 10px; }
+  .nome-info { line-height: 1.3; }
+  .nome-principal { font-size: 14px; color: #2c2c2a; }
+  .nome-num { font-size: 12px; color: #888780; }
+
+  .acoes { display: flex; gap: 6px; }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #2c2c2a; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; }
+
+  .progress-bar { height: 6px; background: #f0ede8; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; background: #1d9e75; border-radius: 3px; transition: width 0.5s; }
+
+  .empty { text-align: center; padding: 3rem; color: #888780; font-size: 14px; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e0ddd6; padding: 0 1.5rem; }
+  .tab { padding: 12px 16px; font-size: 14px; cursor: pointer; color: #888780; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .tab.ativo { color: #2c2c2a; border-bottom-color: #2c2c2a; font-weight: 500; }
+
+  .tab-content { display: none; }
+  .tab-content.ativo { display: block; }
+
+  @media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .acoes .btn { padding: 4px 8px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Painel de Cobrança
+  </div>
+  <div class="header-actions">
+    <span id="mes-label" style="font-size:13px;color:#888780;"></span>
+    <button class="btn btn-primary" onclick="dispararCobranca()">Cobrar agora</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="cards" id="cards">
+    <div class="card"><div class="card-label">Confirmados</div><div class="card-value verde" id="c-pagos">—</div><div class="card-sub" id="c-valor">R$ 0,00</div></div>
+    <div class="card"><div class="card-label">Aguardando</div><div class="card-value amarelo" id="c-aguardando">—</div><div class="card-sub">confirmação</div></div>
+    <div class="card"><div class="card-label">Pendentes</div><div class="card-value cinza" id="c-pendentes">—</div><div class="card-sub">ainda não pagaram</div></div>
+    <div class="card"><div class="card-label">Rejeitados</div><div class="card-value vermelho" id="c-rejeitados">—</div><div class="card-sub">comprovante inválido</div></div>
+    <div class="card">
+      <div class="card-label">Progresso</div>
+      <div class="card-value verde" id="c-pct">0%</div>
+      <div class="progress-bar"><div class="progress-fill" id="c-prog" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="tabs">
+      <div class="tab ativo" onclick="trocarTab('participantes', this)">Participantes</div>
+      <div class="tab" onclick="trocarTab('historico', this)">Histórico</div>
+    </div>
+
+    <div class="tab-content ativo" id="tab-participantes">
+      <div class="section-header">
+        <div class="section-title" id="count-label">Todos</div>
+        <div class="filtros">
+          <div class="filtro ativo" onclick="filtrar('todos', this)">Todos</div>
+          <div class="filtro" onclick="filtrar('confirmado', this)">Confirmados</div>
+          <div class="filtro" onclick="filtrar('aguardando', this)">Aguardando</div>
+          <div class="filtro" onclick="filtrar('pendente', this)">Pendentes</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-participantes">
+          <tr><td colspan="4" class="empty">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-content" id="tab-historico">
+      <div class="section-header">
+        <div class="section-title">Histórico de pagamentos</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>Mês/Ano</th>
+            <th>Status</th>
+            <th>Data confirmação</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-historico">
+          <tr><td colspan="4" class="empty">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let todos = [];
+let filtroAtual = 'todos';
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+async function carregar() {
+  try {
+    const r = await fetch('/api/dashboard');
+    const d = await r.json();
+    if (d.error) { mostrarToast('Erro: ' + d.error); return; }
+
+    const { resumo, participantes, historico, mes, ano } = d;
+    document.getElementById('mes-label').textContent = MESES[mes-1] + ' ' + ano;
+    document.getElementById('c-pagos').textContent = resumo.pagos;
+    document.getElementById('c-aguardando').textContent = resumo.aguardando;
+    document.getElementById('c-pendentes').textContent = resumo.pendentes;
+    document.getElementById('c-rejeitados').textContent = resumo.rejeitados;
+
+    const valorMensal = parseFloat(document.getElementById('c-valor').dataset.valor || 0);
+    document.getElementById('c-valor').textContent = 'R$ ' + (resumo.pagos * valorMensal).toLocaleString('pt-BR', {minimumFractionDigits:2});
+
+    const pct = resumo.total > 0 ? Math.round((resumo.pagos / resumo.total) * 100) : 0;
+    document.getElementById('c-pct').textContent = pct + '%';
+    document.getElementById('c-prog').style.width = pct + '%';
+
+    todos = participantes;
+    renderParticipantes(todos);
+    renderHistorico(historico);
+  } catch(e) {
+    mostrarToast('Erro ao carregar dados');
+  }
+}
+
+function iniciais(nome) {
+  if (!nome) return '?';
+  return nome.split(' ').slice(0,2).map(n => n[0]).join('').toUpperCase();
+}
+
+function badgeStatus(status) {
+  const map = {
+    'confirmado': ['badge-verde', 'Confirmado'],
+    'aguardando': ['badge-amarelo', 'Aguardando'],
+    'rejeitado': ['badge-vermelho', 'Rejeitado'],
+    'pendente': ['badge-cinza', 'Pendente'],
+    null: ['badge-cinza', 'Pendente'],
+    undefined: ['badge-cinza', 'Pendente'],
+  };
+  const [cls, txt] = map[status] || ['badge-cinza', 'Pendente'];
+  return `<span class="badge ${cls}">${txt}</span>`;
+}
+
+function formatarData(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+}
+
+function renderParticipantes(lista) {
+  const tb = document.getElementById('tbody-participantes');
+  document.getElementById('count-label').textContent = lista.length + ' participante' + (lista.length !== 1 ? 's' : '');
+  if (!lista.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">Nenhum participante encontrado</td></tr>'; return; }
+  tb.innerHTML = lista.map(p => `
+    <tr>
+      <td>
+        <div class="nome-cel">
+          <div class="avatar">${iniciais(p.nome)}</div>
+          <div class="nome-info">
+            <div class="nome-principal">${p.nome || 'Sem nome'}</div>
+            <div class="nome-num">${p.numero}</div>
+          </div>
+        </div>
+      </td>
+      <td>${badgeStatus(p.status)}</td>
+      <td style="font-size:13px;color:#888780;">${formatarData(p.validado_em)}</td>
+      <td>
+        <div class="acoes">
+          ${p.status !== 'confirmado' ? `<button class="btn btn-sm btn-primary" onclick="confirmar('${p.numero}', 'confirmado')">Confirmar</button>` : ''}
+          ${p.status === 'confirmado' ? `<button class="btn btn-sm btn-danger" onclick="confirmar('${p.numero}', 'pendente')">Desfazer</button>` : ''}
+          ${(!p.status || p.status === 'pendente') ? `<button class="btn btn-sm" onclick="confirmar('${p.numero}', 'rejeitado')">Rejeitar</button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderHistorico(lista) {
+  const tb = document.getElementById('tbody-historico');
+  if (!lista.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">Nenhum histórico ainda</td></tr>'; return; }
+  tb.innerHTML = lista.map(h => `
+    <tr>
+      <td>
+        <div class="nome-cel">
+          <div class="avatar">${iniciais(h.nome)}</div>
+          <div class="nome-info">
+            <div class="nome-principal">${h.nome || 'Sem nome'}</div>
+            <div class="nome-num">${h.numero}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-size:13px;">${MESES[h.mes-1]} ${h.ano}</td>
+      <td>${badgeStatus(h.status)}</td>
+      <td style="font-size:13px;color:#888780;">${formatarData(h.validado_em)}</td>
+    </tr>
+  `).join('');
+}
+
+function filtrar(tipo, el) {
+  filtroAtual = tipo;
+  document.querySelectorAll('.filtro').forEach(f => f.classList.remove('ativo'));
+  el.classList.add('ativo');
+  if (tipo === 'todos') { renderParticipantes(todos); return; }
+  if (tipo === 'pendente') {
+    renderParticipantes(todos.filter(p => !p.status || p.status === 'pendente'));
+  } else {
+    renderParticipantes(todos.filter(p => p.status === tipo));
+  }
+}
+
+async function confirmar(numero, status) {
+  try {
+    const r = await fetch('/api/confirmar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ numero, status })
+    });
+    const d = await r.json();
+    if (d.ok) { mostrarToast('Atualizado!'); carregar(); }
+    else mostrarToast('Erro: ' + d.error);
+  } catch(e) { mostrarToast('Erro ao atualizar'); }
+}
+
+async function dispararCobranca() {
+  try {
+    await fetch('/cobrar-agora', { method: 'POST' });
+    mostrarToast('Cobrança iniciada!');
+  } catch(e) { mostrarToast('Erro ao disparar cobrança'); }
+}
+
+function trocarTab(nome, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('ativo'));
+  el.classList.add('ativo');
+  document.getElementById('tab-' + nome).classList.add('ativo');
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+carregar();
+setInterval(carregar, 30000);
+</script>
+</body>
+</html>
