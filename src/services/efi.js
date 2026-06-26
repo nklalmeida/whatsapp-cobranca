@@ -20,15 +20,28 @@ function criarAgente() {
 }
 
 async function obterToken() {
-  const agent = criarAgente();
-  const credentials = Buffer.from(`${EFI_CLIENT_ID}:${EFI_CLIENT_SECRET}`).toString('base64');
-  const { data } = await axios.post(`${BASE_URL}/oauth/token`, {
-    grant_type: 'client_credentials'
-  }, {
-    headers: { Authorization: `Basic ${credentials}`, 'Content-Type': 'application/json' },
-    httpsAgent: agent
-  });
-  return data.access_token;
+  try {
+    const agent = criarAgente();
+    const credentials = Buffer.from(`${EFI_CLIENT_ID}:${EFI_CLIENT_SECRET}`).toString('base64');
+
+    const { data } = await axios.post(`${BASE_URL}/oauth/token`, {
+      grant_type: 'client_credentials'
+    }, {
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+      },
+      httpsAgent: agent
+    });
+
+    return data.access_token;
+
+  } catch (error) {
+    console.error("Status:", error.response?.status);
+    console.error("Resposta:", error.response?.data);
+    console.error("Mensagem:", error.message);
+    throw error;
+  }
 }
 
 async function criarCobrancaPix(numero, nome, valor, txid) {
