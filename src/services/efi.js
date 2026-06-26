@@ -78,12 +78,16 @@ async function gerarQrCode(cobranca) {
   const token = await obterToken();
   const agent = criarAgente();
 
-  const locId = cobranca.loc.id;
+  const locId = typeof cobranca === "object"
+    ? cobranca?.loc?.id
+    : cobranca;
+
+  if (!locId) {
+    throw new Error("locId não encontrado para gerar QR");
+  }
 
   const { data } = await axios.get(`${BASE_URL}/v2/loc/${locId}/qrcode`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
+    headers: { Authorization: `Bearer ${token}` },
     httpsAgent: agent
   });
 
