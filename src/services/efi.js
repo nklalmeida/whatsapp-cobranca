@@ -45,11 +45,13 @@ async function criarCobrancaPix(numero, nome, valor, txid) {
 
   // Cria cobrança imediata (cob)
   const { data } = await axios.put(`${BASE_URL}/v2/cob/${txid}`, {
-    calendario: { expiracao: 86400 }, // 24 horas
-    devedor: {
-      cpf: '00000000000', // CPF genérico para HML
-      nome: nome || 'Participante'
+    calendario: { expiracao: 86400 },
+    valor: {
+      original: parseFloat(valor).toFixed(2)
     },
+    chave: EFI_PIX_CHAVE,
+    solicitacaoPagador: `Mensalidade - ${nome || numero}`
+  },
     valor: {
       original: parseFloat(valor).toFixed(2)
     },
