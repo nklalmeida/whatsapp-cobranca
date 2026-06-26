@@ -34,12 +34,12 @@ async function enviarCobrancaComQr(participante) {
 
     const primeiroNome = participante.nome?.split(' ')[0] || 'você';
     const msg =
-      `Olá, ${primeiroNome}! 👋\n\n` +
-      `Sua mensalidade de *R$ ${process.env.VALOR_MENSAL}* está disponível.\n\n` +
-      `📱 *Escaneie o QR Code abaixo para pagar via PIX:*\n\n` +
-      `\`${qr.qrcode}\`\n\n` +
-      `O pagamento é confirmado automaticamente! ✅\n\n` +
-      `Ou use a chave PIX: ${process.env.PIX_CHAVE}`;
+  `Olá, ${primeiroNome}! 👋\n\n` +
+  `Sua mensalidade de *R$ ${process.env.VALOR_MENSAL}* está disponível.\n\n` +
+  `📲 *PIX Copia e Cola:*\n\n` +
+  `\`${cobranca.pixCopiaECola}\`\n\n` +
+  `O pagamento é confirmado automaticamente! ✅\n\n` +
+  `Ou use a chave PIX: ${process.env.PIX_CHAVE}`;
 
     await enviarMensagem(participante.numero, msg);
     console.log(`✅ QR Code enviado para ${participante.numero}`);
