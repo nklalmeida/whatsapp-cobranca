@@ -27,11 +27,10 @@ async function enviarMensagemGrupo(texto) {
 }
 
 async function buscarParticipantesGrupo() {
-  const { data } = await api.get(`/group-members/${process.env.GRUPO_ID}`);
-  const lista = Array.isArray(data) ? data : data.members || data.participants || [];
+  const { data } = await api.post(`/group-metadata/${process.env.GRUPO_ID}`);
+  const lista = data.participants || [];
   return lista
-    .filter(p => !p.isAdmin)
-    .map(p => ({ numero: p.phone, nome: p.name || p.phone }));
+    .filter(p => !p.isSuperAdmin)
+    .map(p => ({ numero: p.phone, nome: p.phone }));
 }
-
 module.exports = { enviarMensagem, enviarMensagemGrupo, buscarParticipantesGrupo };
