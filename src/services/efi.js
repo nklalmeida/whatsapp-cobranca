@@ -93,4 +93,4 @@ async function configurarWebhook(urlWebhook) {
   });
 }
 
-module.exports = { criarCobrancaPix, gerarQrCode, configurarWebhook };
+module.exports = { criarCobrancaPix, configurarWebhook };
