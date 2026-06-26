@@ -26,6 +26,9 @@ app.use('/painel', (req, res, next) => {
 });
 
 app.use('/painel', express.static(path.join(__dirname, '../public')));
+app.get('/painel', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 app.use('/', painelRoutes);
 app.use('/', webhookRoutes);
 
