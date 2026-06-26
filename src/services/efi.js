@@ -6,6 +6,12 @@ const crypto = require('crypto');
 function gerarTxid() {
   return crypto.randomBytes(16).toString('hex');
 }
+function formatarPixCopiaECola(pix) {
+  if (!pix) return "";
+
+  // quebra em blocos de 50 caracteres só para visual
+  return pix.match(/.{1,50}/g).join('\n');
+}
 const EFI_CLIENT_ID = process.env.EFI_CLIENT_ID;
 const EFI_CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
 const EFI_SANDBOX = process.env.EFI_SANDBOX !== 'false';
@@ -90,7 +96,15 @@ async function gerarQrCode(cobranca) {
     headers: { Authorization: `Bearer ${token}` },
     httpsAgent: agent
   });
+console.log("TXID GERADO:", txid);
 
+console.log("COBRANÇA CRIADA:", data);
+
+// 🔥 PIX FORMATADO AQUI
+console.log("==================================");
+console.log("PIX COPIA E COLA (FORMATADO):");
+console.log(formatarPixCopiaECola(data.pixCopiaECola));
+console.log("==================================");
   return data;
 }
 
