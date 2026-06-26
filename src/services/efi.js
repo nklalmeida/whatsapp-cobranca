@@ -60,7 +60,9 @@ async function criarCobrancaPix(numero, nome, valor, txid) {
     },
     httpsAgent: agent
   });
-
+console.log("COBRANÇA COMPLETA:", data);
+console.log("LOC:", data?.loc);
+console.log("LOC ID:", data?.loc?.id);
   return data;
 }
 
