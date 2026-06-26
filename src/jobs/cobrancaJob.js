@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const { buscarPendentes, sincronizarParticipantes, resumoMensal } = require('../services/cobranca');
 const { enviarMensagem, enviarMensagemGrupo, buscarParticipantesGrupo } = require('../services/whatsapp');
-const { criarCobrancaPix, gerarQrCode } = require('../services/efi');
+const { criarCobrancaPix } = require('../services/efi');
 const { pool } = require('../db');
 
 function gerarTxid(numero) {
@@ -31,7 +31,6 @@ async function enviarCobrancaComQr(participante) {
       [txid, participante.numero]
     );
 
-    const qr = await gerarQrCode(cobranca.loc.id);
 
     const primeiroNome = participante.nome?.split(' ')[0] || 'você';
     const msg =
