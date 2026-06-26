@@ -27,7 +27,7 @@ async function enviarMensagemGrupo(texto) {
 }
 
 async function buscarParticipantesGrupo() {
-  const { data } = await api.post(`/group-metadata/${process.env.GRUPO_ID}`);
+  const { data } = await api.get(`/group-metadata/${process.env.GRUPO_ID}`);
   const lista = data.participants || [];
   return lista
     .filter(p => !p.isSuperAdmin)
