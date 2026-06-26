@@ -84,9 +84,7 @@ async function gerarQrCode(cobranca) {
   const token = await obterToken();
   const agent = criarAgente();
 
-  const locId = typeof cobranca === "object"
-    ? cobranca?.loc?.id
-    : cobranca;
+  const locId = cobranca?.loc?.id;
 
   if (!locId) {
     throw new Error("locId não encontrado para gerar QR");
@@ -97,13 +95,13 @@ async function gerarQrCode(cobranca) {
     httpsAgent: agent
   });
 
-console.log("COBRANÇA CRIADA:", data);
+  const pix = data?.pixCopiaECola || "";
 
-// 🔥 PIX FORMATADO AQUI
-console.log("==================================");
-console.log("PIX COPIA E COLA (FORMATADO):");
-console.log(formatarPixCopiaECola(data.pixCopiaECola));
-console.log("==================================");
+  console.log("QR CODE GERADO:");
+  console.log("==================================");
+  console.log(formatarPixCopiaECola(pix));
+  console.log("==================================");
+
   return data;
 }
 
