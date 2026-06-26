@@ -80,30 +80,7 @@ console.log("TXID GERADO:", txid);
 }
 
 
-async function gerarQrCode(cobranca) {
-  const token = await obterToken();
-  const agent = criarAgente();
 
-  const locId = cobranca?.loc?.id;
-
-  if (!locId) {
-    throw new Error("locId não encontrado para gerar QR");
-  }
-
-  const { data } = await axios.get(`${BASE_URL}/v2/loc/${locId}/qrcode`, {
-    headers: { Authorization: `Bearer ${token}` },
-    httpsAgent: agent
-  });
-
-  const pix = data?.pixCopiaECola || "";
-
-  console.log("QR CODE GERADO:");
-  console.log("==================================");
-  console.log(formatarPixCopiaECola(pix));
-  console.log("==================================");
-
-  return data;
-}
 
 async function configurarWebhook(urlWebhook) {
   const token = await obterToken();
