@@ -2,7 +2,10 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-
+const crypto = require('crypto');
+function gerarTxid() {
+  return crypto.randomBytes(16).toString('hex');
+}
 const EFI_CLIENT_ID = process.env.EFI_CLIENT_ID;
 const EFI_CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
 const EFI_SANDBOX = process.env.EFI_SANDBOX !== 'false';
