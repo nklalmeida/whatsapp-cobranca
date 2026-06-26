@@ -47,25 +47,37 @@ async function obterToken() {
 async function criarCobrancaPix(numero, nome, valor, txid) {
   const token = await obterToken();
   const agent = criarAgente();
+
   const { data } = await axios.put(`${BASE_URL}/v2/cob/${txid}`, {
     calendario: { expiracao: 86400 },
     valor: { original: parseFloat(valor).toFixed(2) },
     chave: EFI_PIX_CHAVE,
     solicitacaoPagador: `Mensalidade - ${nome || numero}`
   }, {
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
     httpsAgent: agent
   });
+
   return data;
 }
 
-async function gerarQrCode(locId) {
+
+async function gerarQrCode(cobranca) {
   const token = await obterToken();
   const agent = criarAgente();
+
+  const locId = cobranca.loc.id;
+
   const { data } = await axios.get(`${BASE_URL}/v2/loc/${locId}/qrcode`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     httpsAgent: agent
   });
+
   return data;
 }
 
