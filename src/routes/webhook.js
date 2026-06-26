@@ -11,6 +11,7 @@ router.post('/webhook', async (req, res) => {
 
   // Z-API envia isStatusReply para mensagens de status — ignora
   if (body.isStatusReply) return;
+  console.log('👤 Remetente:', remetente, '| Admin:', isAdmin, '| Texto:', texto);
 
   const numero = body.phone?.replace(/\D/g, '');
   const isGrupo = body.isGroupMsg || false;
