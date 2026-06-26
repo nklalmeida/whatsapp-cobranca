@@ -5,6 +5,7 @@ const { iniciarBanco } = require('./db');
 const { registrarJobs } = require('./jobs/cobrancaJob');
 const webhookRoutes = require('./routes/webhook');
 const painelRoutes = require('./routes/painel');
+const pixWebhookRoutes = require('./routes/pixWebhook');
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -26,9 +27,9 @@ app.use('/painel', (req, res, next) => {
 });
 
 app.use('/painel', express.static(path.join(__dirname, '../public')));
-app.get('/painel', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
+app.get('/painel', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')));
+
+app.use('/', pixWebhookRoutes);
 app.use('/', painelRoutes);
 app.use('/', webhookRoutes);
 
@@ -43,7 +44,7 @@ async function iniciar() {
     console.log(`🤖 Agente de cobrança rodando na porta ${PORT}`);
     console.log(`📅 Cobrança automática: todo dia 1 às 9h`);
     console.log(`🔔 Lembretes: dias 10 e 25 de cada mês`);
-    console.log(`🖥️  Painel: http://localhost:${PORT}/painel?senha=SUA_SENHA`);
+    console.log(`🖥️  Painel: http://localhost:${PORT}/painel`);
   });
 }
 
