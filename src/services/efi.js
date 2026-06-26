@@ -44,38 +44,30 @@ async function obterToken() {
   }
 }
 
-async function criarCobrancaPix(numero, nome, valor, txid) {
-  try {
-    const token = await obterToken();
-    const agent = criarAgente();
+async function criarCobrancaPix(numero, nome, valor) {
+  const token = await obterToken();
+  const agent = criarAgente();
 
-    const { data } = await axios.put(`${BASE_URL}/v2/cob/${txid}`, {
-      calendario: { expiracao: 86400 },
-      valor: { original: parseFloat(valor).toFixed(2) },
-      chave: EFI_PIX_CHAVE,
-      solicitacaoPagador: `Mensalidade - ${nome || numero}`
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      httpsAgent: agent
-    });
+  // 🔥 GERANDO TXID CORRETO AQUI
+  const txid = gerarTxid();
 
-    console.log("==================================");
-    console.log("COBRANÇA CRIADA COM SUCESSO");
-    console.log("DATA:", JSON.stringify(data, null, 2));
-    console.log("LOC:", data?.loc);
-    console.log("LOC ID:", data?.loc?.id);
-    console.log("==================================");
+  const { data } = await axios.put(`${BASE_URL}/v2/cob/${txid}`, {
+    calendario: { expiracao: 86400 },
+    valor: { original: parseFloat(valor).toFixed(2) },
+    chave: EFI_PIX_CHAVE,
+    solicitacaoPagador: `Mensalidade - ${nome || numero}`
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    httpsAgent: agent
+  });
 
-    return data;
+  console.log("TXID GERADO:", txid);
+  console.log("COBRANÇA CRIADA:", data);
 
-  } catch (error) {
-    console.log("❌ ERRO NA CRIAÇÃO DA COBRANÇA:");
-    console.log(error.response?.data || error.message);
-    throw error;
-  }
+  return data;
 }
 
 
