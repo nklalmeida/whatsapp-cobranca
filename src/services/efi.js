@@ -44,33 +44,7 @@ async function obterToken() {
   }
 }
 
-async function criarCobrancaPix(numero, nome, valor, txid) {
-  const token = await obterToken();
-  const agent = criarAgente();
-
-  const { data } = await axios.put(`${BASE_URL}/v2/cob/${txid}`, {
-    calendario: { expiracao: 86400 },
-    valor: { original: parseFloat(valor).toFixed(2) },
-    chave: EFI_PIX_CHAVE,
-    solicitacaoPagador: `Mensalidade - ${nome || numero}`
-  }, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    httpsAgent: agent
-  });
-
-  // 🔎 DEBUG DO LOC (AQUI ESTÁ O IMPORTANTE)
-  console.log("==================================");
-  console.log("COBRANÇA COMPLETA:", JSON.stringify(data, null, 2));
-  console.log("LOC:", data?.loc);
-  console.log("LOC ID:", data?.loc?.id);
-  console.log("LOCATION:", data?.loc?.location);
-  console.log("==================================");
-
-  return data;
-}
+async function criarCobrancaPix(numero, nome, valor, txid) { const token = await obterToken(); const agent = criarAgente(); const { data } = await axios.put(${BASE_URL}/v2/cob/${txid}, { calendario: { expiracao: 86400 }, valor: { original: parseFloat(valor).toFixed(2) }, chave: EFI_PIX_CHAVE, solicitacaoPagador: Mensalidade - ${nome || numero} }, { headers: { Authorization: Bearer ${token}, 'Content-Type': 'application/json' }, httpsAgent: agent }); console.log("COBRANÇA COMPLETA:", data); console.log("LOC:", data?.loc); console.log("LOC ID:", data?.loc?.id); return data; }
 
 
 async function gerarQrCode(cobranca) {
