@@ -22,7 +22,8 @@ async function enviarCobrancaComPix(participante) {
       participante.nome,
       process.env.VALOR_MENSAL
     );
-
+console.log("🔍 COBRANÇA COMPLETA:", cobranca);
+console.log("🔍 PIX COPIA E COLA:", cobranca?.pixCopiaECola);
     // salva referência no banco (opcional)
     await pool.query(
       'UPDATE participantes SET txid_atual = $1 WHERE numero = $2',
