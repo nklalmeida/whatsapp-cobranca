@@ -9,6 +9,7 @@ async function iniciarBanco() {
       numero VARCHAR(20) UNIQUE NOT NULL,
       nome VARCHAR(100),
       ativo BOOLEAN DEFAULT true,
+      txid_atual VARCHAR(50),
       criado_em TIMESTAMP DEFAULT NOW()
     );
 
@@ -24,6 +25,8 @@ async function iniciarBanco() {
       criado_em TIMESTAMP DEFAULT NOW(),
       UNIQUE(participante_id, mes, ano)
     );
+
+    ALTER TABLE participantes ADD COLUMN IF NOT EXISTS txid_atual VARCHAR(50);
   `);
   console.log('✅ Banco de dados pronto');
 }
